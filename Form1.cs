@@ -288,7 +288,26 @@ namespace StudentFeedback_SpaceModules
                 case 2:
                     {
                         //Empathy
-                        performance = studentPerformance.Score2;
+                        //Slecht resultaat
+                        performance = 1;
+
+                        if (studentPerformance.Score2 >= (distribution.mean - distribution.standardDeviation))
+                        {
+                            //Onder gemiddeld resultaat
+                            performance = 2;
+
+                            if (studentPerformance.Score2 >= distribution.mean)
+                            {
+                                //Goed resultaat
+                                performance = 3;
+
+                                if (studentPerformance.Score2 >= (distribution.mean + distribution.standardDeviation))
+                                {
+                                    //Best mogelijke resultaat
+                                    performance = 4;
+                                }
+                            }
+                        }
 
                         advice = "Invoelen: ";
 
@@ -319,7 +338,26 @@ namespace StudentFeedback_SpaceModules
                 case 3:
                     {
                         //Find in DB
-                        performance = studentPerformance.Score3;
+                        //Slecht resultaat
+                        performance = 1;
+
+                        if (studentPerformance.Score3 >= (distribution.mean - distribution.standardDeviation))
+                        {
+                            //Onder gemiddeld resultaat
+                            performance = 2;
+
+                            if (studentPerformance.Score3 >= distribution.mean)
+                            {
+                                //Goed resultaat
+                                performance = 3;
+
+                                if (studentPerformance.Score3 >= (distribution.mean + distribution.standardDeviation))
+                                {
+                                    //Best mogelijke resultaat
+                                    performance = 4;
+                                }
+                            }
+                        }
 
                         advice = "Informatie opzoeken: ";
 
@@ -350,7 +388,26 @@ namespace StudentFeedback_SpaceModules
                 case 4:
                     {
                         //Inquire
-                        performance = studentPerformance.Score4;
+                        //Slecht resultaat
+                        performance = 1;
+
+                        if (studentPerformance.Score4 >= (distribution.mean - distribution.standardDeviation))
+                        {
+                            //Onder gemiddeld resultaat
+                            performance = 2;
+
+                            if (studentPerformance.Score4 >= distribution.mean)
+                            {
+                                //Goed resultaat
+                                performance = 3;
+
+                                if (studentPerformance.Score4 >= (distribution.mean + distribution.standardDeviation))
+                                {
+                                    //Best mogelijke resultaat
+                                    performance = 4;
+                                }
+                            }
+                        }
 
                         advice = "Vragen stellen: ";
 
@@ -381,7 +438,26 @@ namespace StudentFeedback_SpaceModules
                 case 5:
                     {
                         //Polite
-                        performance = 4;
+                        //Slecht resultaat
+                        performance = 1;
+
+                        if (studentPerformance.Score5 >= (distribution.mean - distribution.standardDeviation))
+                        {
+                            //Onder gemiddeld resultaat
+                            performance = 2;
+
+                            if (studentPerformance.Score5 >= distribution.mean)
+                            {
+                                //Goed resultaat
+                                performance = 3;
+
+                                if (studentPerformance.Score5 >= (distribution.mean + distribution.standardDeviation))
+                                {
+                                    //Best mogelijke resultaat
+                                    performance = 4;
+                                }
+                            }
+                        }
 
                         advice = "Vriendelijkheid: ";
 
@@ -512,27 +588,27 @@ namespace StudentFeedback_SpaceModules
 
             tempRec = new Record();
             if (records.TryGetValue(recKey, out tempRec))
-                advice += generateTextAdvice(distributionsDictionary[empathyKey], tempRec, 1) + "@"; //Empathy
+                advice += generateTextAdvice(distributionsDictionary[empathyKey], tempRec, 2) + "@"; //Empathy
             else
                 advice += "Er zijn voor jou geen scores over invoelen bekend voor deze les.@";
 
             tempRec = new Record();
             if (records.TryGetValue(recKey, out tempRec))
-                advice += generateTextAdvice(distributionsDictionary[findindbKey], tempRec, 1) + "@"; //Find in DB
+                advice += generateTextAdvice(distributionsDictionary[findindbKey], tempRec, 3) + "@"; //Find in DB
             else
                 advice += "Er zijn voor jou geen scores over opzoeken bekend voor deze les.@";
 
             tempRec = new Record();
             if (records.TryGetValue(recKey, out tempRec))
-                advice += generateTextAdvice(distributionsDictionary[inquireKey], tempRec, 1) + "@"; //Inquiry
+                advice += generateTextAdvice(distributionsDictionary[inquireKey], tempRec, 4) + "@"; //Inquiry
             else
                 advice += "Er zijn voor jou geen scores over vragen stellen bekend voor deze les.@";
 
             tempRec = new Record();
             if (records.TryGetValue(recKey, out tempRec))
-                advice += generateTextAdvice(distributionsDictionary[politeKey], tempRec, 1) + "@"; //Politeness
+                advice += generateTextAdvice(distributionsDictionary[politeKey], tempRec, 5) + "@@"; //Politeness
             else
-                advice += "Er zijn voor jou geen scores over vriendelijkheid bekend voor deze les.@";
+                advice += "Er zijn voor jou geen scores over vriendelijkheid bekend voor deze les.@@";
             
             //Closing
             advice += "Probeer deze adviezen te gebruiken om zo goed mogelijk te worden in communicatie. "
