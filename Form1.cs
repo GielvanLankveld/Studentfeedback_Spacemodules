@@ -28,6 +28,8 @@ namespace StudentFeedback_SpaceModules
         private Dictionary<Tuple<String, String, String, String>, Distribution> distributionsDictionary = 
             new Dictionary<Tuple<String, String, String, String>, Distribution>();
         private Tuple<String, String, String, String> selectedRecordKey;
+        private String defaultOutputDirectory = System.Configuration.ConfigurationManager.AppSettings["defaultOutputDirectory"];
+        private String defaultInputDirectory = System.Configuration.ConfigurationManager.AppSettings["defaultInputDirectory"];
 
         public Form1()
         {
@@ -100,7 +102,7 @@ namespace StudentFeedback_SpaceModules
         {
             //Prep the dialog
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = System.Configuration.ConfigurationManager.AppSettings["defaultDirectory"]; //For debugging
+            openFileDialog1.InitialDirectory = defaultInputDirectory; //For debugging
             openFileDialog1.Filter = "csv files (*.csv)|*.csv";
             openFileDialog1.RestoreDirectory = true;
 
@@ -116,7 +118,7 @@ namespace StudentFeedback_SpaceModules
         {
             //Prep the dialog
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = "C:\\Users\\Worker\\Documents\\Git_repositories\\StudentFeedback_SpaceModules"; //For debugging
+            openFileDialog1.InitialDirectory = defaultInputDirectory; //For debugging
             openFileDialog1.Filter = "json files (*.json)|*.json";
             openFileDialog1.RestoreDirectory = true;
 
@@ -558,9 +560,40 @@ namespace StudentFeedback_SpaceModules
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //Generate output for student
-            chart1.SaveImage("test.jpeg", ChartImageFormat.Jpeg);
-            Image image = Image.FromFile("test.jpeg");
+            if (comboBoxStudent.Items.Count > 0)
+            {
+                String studentName = comboBoxStudent.SelectedItem.ToString();
+
+                //Generate output for student
+                Bitmap closingBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap empathyBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap findindbBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap inquiregBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap politeBmp = new Bitmap(chart1.Width, chart1.Height);
+                
+                //Put the chart in a bitmap
+                chart1.DrawToBitmap(closingBmp, new Rectangle(0,0,chart1.Width,chart1.Height));
+                chart2.DrawToBitmap(empathyBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                chart3.DrawToBitmap(findindbBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                chart4.DrawToBitmap(inquiregBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                chart5.DrawToBitmap(politeBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+
+                //Bitmap into which the final output will go
+                Bitmap compoundChart = new Bitmap(closingBmp.Width*3,closingBmp.Height*2);
+
+                using (Graphics g = Graphics.FromImage(compoundChart))
+                {
+                    g.DrawImage(closingBmp, 0, 0);
+                    g.DrawImage(empathyBmp, closingBmp.Width, 0);
+                    g.DrawImage(findindbBmp, closingBmp.Width*2, 0);
+                    g.DrawImage(inquiregBmp, 0, closingBmp.Height);
+                    g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height);
+                }
+
+
+                //Output the feedback
+                compoundChart.Save(defaultOutputDirectory + "\\" + studentName + ".bmp");
+            }
         }
 
         private void fillAdvice(Tuple<String, String, String, String> recordToUse)
