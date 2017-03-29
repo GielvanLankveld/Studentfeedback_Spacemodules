@@ -701,9 +701,14 @@ namespace StudentFeedback_SpaceModules
                 Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
                     closingKey.Item1, closingKey.Item2, closingKey.Item3, i.ToString());
 
-                closingMean.Points.Add(tempDict[tempKey].mean);
-                closingSDH.Points.Add(tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                closingSDL.Points.Add(tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                closingSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                closingMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+                closingSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+
+                //This code works with linecharts but not with stacked-areacharts
+                //closingMean.Points.AddXY(i,tempDict[tempKey].mean);
+                //closingSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
+                //closingSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
             }
 
             //Empathy
@@ -721,9 +726,13 @@ namespace StudentFeedback_SpaceModules
                 Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
                     empathyKey.Item1, empathyKey.Item2, empathyKey.Item3, i.ToString());
 
-                empathyMean.Points.Add(tempDict[tempKey].mean);
-                empathySDH.Points.Add(tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                empathySDL.Points.Add(tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                empathySDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                empathyMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+                empathySDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+
+                //empathyMean.Points.AddXY(i,tempDict[tempKey].mean);
+                //empathySDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
+                //empathySDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
             }
 
             //Find in db
@@ -741,9 +750,13 @@ namespace StudentFeedback_SpaceModules
                 Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
                     findindbKey.Item1, findindbKey.Item2, findindbKey.Item3, i.ToString());
 
-                findindbMean.Points.Add(tempDict[tempKey].mean);
-                findindbSDH.Points.Add(tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                findindbSDL.Points.Add(tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                findindbSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                findindbMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+                findindbSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+
+                //findindbMean.Points.AddXY(i,tempDict[tempKey].mean);
+                //findindbSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
+                //findindbSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
             }
             
             //Inquire
@@ -761,9 +774,13 @@ namespace StudentFeedback_SpaceModules
                 Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
                     inquireKey.Item1, inquireKey.Item2, inquireKey.Item3, i.ToString());
 
-                inquireMean.Points.Add(tempDict[tempKey].mean);
-                inquireSDH.Points.Add(tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                inquireSDL.Points.Add(tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                inquireSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                inquireMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+                inquireSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+
+                //inquireMean.Points.AddXY(i,tempDict[tempKey].mean);
+                //inquireSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
+                //inquireSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
             }
 
             //Polite
@@ -781,9 +798,13 @@ namespace StudentFeedback_SpaceModules
                 Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
                     politeKey.Item1, politeKey.Item2, politeKey.Item3, i.ToString());
 
-                politeMean.Points.Add(tempDict[tempKey].mean);
-                politeSDH.Points.Add(tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                politeSDL.Points.Add(tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                politeSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                politeMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+                politeSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
+
+                //politeMean.Points.AddXY(i,tempDict[tempKey].mean);
+                //politeSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
+                //politeSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
             }
 
             //Adding player scores charts
@@ -817,11 +838,11 @@ namespace StudentFeedback_SpaceModules
                 Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
                     recordToUse.Item1, recordToUse.Item2, recordToUse.Item3, i.ToString());
 
-                closingPlayer.Points.Add(tempRecs[tempKey].Score1);
-                empathyPlayer.Points.Add(tempRecs[tempKey].Score2);
-                findindbPlayer.Points.Add(tempRecs[tempKey].Score3);
-                inquirePlayer.Points.Add(tempRecs[tempKey].Score4);
-                politePlayer.Points.Add(tempRecs[tempKey].Score5);
+                closingPlayer.Points.AddXY(i,tempRecs[tempKey].Score1);
+                empathyPlayer.Points.AddXY(i,tempRecs[tempKey].Score2);
+                findindbPlayer.Points.AddXY(i,tempRecs[tempKey].Score3);
+                inquirePlayer.Points.AddXY(i,tempRecs[tempKey].Score4);
+                politePlayer.Points.AddXY(i,tempRecs[tempKey].Score5);
             }
         }
 
