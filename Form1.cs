@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -361,7 +362,7 @@ namespace StudentFeedback_SpaceModules
                             }
                         }
 
-                        advice = "Informatie opzoeken: ";
+                        advice = "Opzoeken: ";
 
                         switch (performance)
                         {
@@ -411,29 +412,29 @@ namespace StudentFeedback_SpaceModules
                             }
                         }
 
-                        advice = "Vragen stellen: ";
+                        advice = "Doorvragen: ";
 
                         switch (performance)
                         {
                             case 1:
                                 {
                                     //Low performance
-                                    advice += "op het gebied van vragen stellen doe je het nu onder het gemiddelde van je klas. Waarschijnlijk kun je je communicatie op dit onderdeel nog verbeteren. Probeer telkens te kijken of je alles weet wat je nodig hebt om de klant te helpen. Kun je het niet onthouden? Schrijf dan dingen op.";
+                                    advice += "op het gebied van doorvragen doe je het nu onder het gemiddelde van je klas. Waarschijnlijk kun je je communicatie op dit onderdeel nog verbeteren. Probeer telkens te kijken of je alles weet wat je nodig hebt om de klant te helpen. Kun je het niet onthouden? Schrijf dan dingen op.";
                                 }; break;
                             case 2:
                                 {
                                     //Average/low performance
-                                    advice += "op het gebied van vragen stellen doe je het nu net iets onder het gemiddelde van je klas. Hou dit vol.";
+                                    advice += "op het gebied van doorvragen doe je het nu net iets onder het gemiddelde van je klas. Hou dit vol.";
                                 }; break;
                             case 3:
                                 {
                                     //Average/high performance
-                                    advice += "op het gebied van vragen stellen doe je het nu gelijk aan of beter dan het gemiddelde van je klas. Dit is heel netjes.";
+                                    advice += "op het gebied van doorvragen doe je het nu gelijk aan of beter dan het gemiddelde van je klas. Dit is heel netjes.";
                                 }; break;
                             case 4:
                                 {
                                     //High performance
-                                    advice += "op het gebied van vragen stellen ben je nu een van de besten van de klas. Uitstekend!";
+                                    advice += "op het gebied van doorvragen ben je nu een van de besten van de klas. Uitstekend!";
                                 }; break;
                         }
                     }; break;
@@ -562,38 +563,91 @@ namespace StudentFeedback_SpaceModules
         {
             if (comboBoxStudent.Items.Count > 0)
             {
-                String studentName = comboBoxStudent.SelectedItem.ToString();
+                //Pick student to output
+                Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
+                    comboBoxStudent.SelectedItem.ToString(),
+                    comboBoxROC.SelectedItem.ToString(),
+                    comboBoxGroep.SelectedItem.ToString(),
+                    comboBoxLes.SelectedItem.ToString());
 
-                //Generate output for student
-                Bitmap closingBmp = new Bitmap(chart1.Width, chart1.Height);
-                Bitmap empathyBmp = new Bitmap(chart1.Width, chart1.Height);
-                Bitmap findindbBmp = new Bitmap(chart1.Width, chart1.Height);
-                Bitmap inquiregBmp = new Bitmap(chart1.Width, chart1.Height);
-                Bitmap politeBmp = new Bitmap(chart1.Width, chart1.Height);
-                
-                //Put the chart in a bitmap
-                chart1.DrawToBitmap(closingBmp, new Rectangle(0,0,chart1.Width,chart1.Height));
-                chart2.DrawToBitmap(empathyBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-                chart3.DrawToBitmap(findindbBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-                chart4.DrawToBitmap(inquiregBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-                chart5.DrawToBitmap(politeBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                //Request output
+                OutputToGraphic(studentKey);
 
-                //Bitmap into which the final output will go
-                Bitmap compoundChart = new Bitmap(closingBmp.Width*3,closingBmp.Height*2);
+                //Report completed
+                MessageBox.Show("Output gemaakt");
+            }
+            else
+            {
+                MessageBox.Show("Output kon niet worden gemaakt omdat er geen student geselecteerd is.");
+            }
+        }
 
-                using (Graphics g = Graphics.FromImage(compoundChart))
+        private void OutputToGraphic(Tuple<String, String, String, String> key)
+        {
+            String studentName = comboBoxStudent.SelectedItem.ToString();
+            Record scores = records[key];
+
+            string scoresHeader = "Les\tAfsluiten\tInvoelen\tOpzoeken\tDoorvragen\tVriendelijkheid";
+            string scoreString = key.Item3.ToString()+"\t"+scores.Score1 + "\t" + scores.Score2 
+                + "\t" + scores.Score3 + "\t" + scores.Score4 + "\t" + scores.Score5;
+
+            String advice = richTextBox1.Text;
+
+            //Generate output for student
+            Bitmap closingBmp = new Bitmap(chart1.Width, chart1.Height);
+            Bitmap empathyBmp = new Bitmap(chart1.Width, chart1.Height);
+            Bitmap findindbBmp = new Bitmap(chart1.Width, chart1.Height);
+            Bitmap inquiregBmp = new Bitmap(chart1.Width, chart1.Height);
+            Bitmap politeBmp = new Bitmap(chart1.Width, chart1.Height);
+
+            //Put the chart in a bitmap
+            chart1.DrawToBitmap(closingBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+            chart2.DrawToBitmap(empathyBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+            chart3.DrawToBitmap(findindbBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+            chart4.DrawToBitmap(inquiregBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+            chart5.DrawToBitmap(politeBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+
+            //Bitmap into which the final output will go
+            Bitmap compoundChart = new Bitmap(closingBmp.Width * 3, closingBmp.Height * 5);
+
+            //Set spacings between elements of the output
+            int spacing1 = 20;
+            int spacing2 = spacing1 + (2 * closingBmp.Height);
+            int spacing3 = spacing2 + 12;
+            int spacing4 = spacing3 + 12 + 20;
+
+            using (Graphics g = Graphics.FromImage(compoundChart))
+            {
+                //Make the entire background white
+                using (SolidBrush sBrush = new SolidBrush(Color.FromArgb(255, 255, 255)))
                 {
-                    g.DrawImage(closingBmp, 0, 0);
-                    g.DrawImage(empathyBmp, closingBmp.Width, 0);
-                    g.DrawImage(findindbBmp, closingBmp.Width*2, 0);
-                    g.DrawImage(inquiregBmp, 0, closingBmp.Height);
-                    g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height);
+                    g.FillRectangle(sBrush, 0, 0, compoundChart.Width, compoundChart.Height);
                 }
 
+                //Write the student name
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                //TextRenderer.DrawText(g, studentName, this.Font, new Rectangle(0, spacing1, compoundChart.Width, 12), Color.Black);
+                Brush brush = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
+                g.DrawString(studentName, this.Font, brush, new RectangleF(0, spacing1, compoundChart.Width, 12));
+                
+                //Draw the graphs
+                g.DrawImage(closingBmp, 0, spacing1);
+                g.DrawImage(empathyBmp, closingBmp.Width, spacing1);
+                g.DrawImage(findindbBmp, closingBmp.Width * 2, spacing1);
+                g.DrawImage(inquiregBmp, 0, closingBmp.Height + spacing1);
+                g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height + spacing1);
 
-                //Output the feedback
-                compoundChart.Save(defaultOutputDirectory + "\\" + studentName + ".bmp");
+                //Draw the scores table
+                TextRenderer.DrawText(g, scoresHeader, this.Font, new Rectangle(0, spacing2, compoundChart.Width, 12), Color.Black);
+                TextRenderer.DrawText(g, scoreString, this.Font, new Rectangle(0, spacing3, compoundChart.Width, 12), Color.Black);
+
+                //Draw the advice
+                TextRenderer.DrawText(g, advice, this.Font, new Rectangle(0, spacing4, compoundChart.Width - 80, 200), Color.Black);
             }
+
+
+            //Output the feedback
+            compoundChart.Save(defaultOutputDirectory + "\\" + studentName + ".bmp");
         }
 
         private void fillAdvice(Tuple<String, String, String, String> recordToUse)
