@@ -574,7 +574,7 @@ namespace StudentFeedback_SpaceModules
                 OutputToGraphic(studentKey);
 
                 //Report completed
-                MessageBox.Show("Output gemaakt");
+                //MessageBox.Show("Output gemaakt");
             }
             else
             {
@@ -587,9 +587,9 @@ namespace StudentFeedback_SpaceModules
             String studentName = comboBoxStudent.SelectedItem.ToString();
             Record scores = records[key];
 
-            string scoresHeader = "Les\tAfsluiten\tInvoelen\tOpzoeken\tDoorvragen\tVriendelijkheid";
-            string scoreString = key.Item3.ToString()+"\t"+scores.Score1 + "\t" + scores.Score2 
-                + "\t" + scores.Score3 + "\t" + scores.Score4 + "\t" + scores.Score5;
+            string scoresHeader = "Les\t\tAfsluiten\t\tInvoelen\t\tOpzoeken\tDoorvragen\tVriendelijkheid";
+            string scoreString = key.Item4.ToString()+"\t\t"+scores.Score1 + "\t\t" + scores.Score2 
+                + "\t\t" + scores.Score3 + "\t\t" + scores.Score4 + "\t\t" + scores.Score5;
 
             String advice = richTextBox1.Text;
 
@@ -611,10 +611,12 @@ namespace StudentFeedback_SpaceModules
             Bitmap compoundChart = new Bitmap(closingBmp.Width * 3, closingBmp.Height * 5);
 
             //Set spacings between elements of the output
-            int spacing1 = 20;
+            int spacing1 = 32; //Starting y of graphs
             int spacing2 = spacing1 + (2 * closingBmp.Height);
-            int spacing3 = spacing2 + 12;
-            int spacing4 = spacing3 + 12 + 20;
+            int spacing3 = spacing2 + 12; //Starting y of tables
+            int spacing4 = spacing3 + 20;
+            int spacing5 = spacing4 + 12 + 20; //Starting y of advice
+            int spacing6 = spacing5 + 20;
 
             using (Graphics g = Graphics.FromImage(compoundChart))
             {
@@ -626,9 +628,8 @@ namespace StudentFeedback_SpaceModules
 
                 //Write the student name
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                //TextRenderer.DrawText(g, studentName, this.Font, new Rectangle(0, spacing1, compoundChart.Width, 12), Color.Black);
                 Brush brush = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-                g.DrawString(studentName, this.Font, brush, new RectangleF(0, spacing1, compoundChart.Width, 12));
+                g.DrawString(studentName, this.Font, brush, new RectangleF((compoundChart.Width/2)-50, 12, compoundChart.Width-40, 12));
                 
                 //Draw the graphs
                 g.DrawImage(closingBmp, 0, spacing1);
@@ -638,11 +639,13 @@ namespace StudentFeedback_SpaceModules
                 g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height + spacing1);
 
                 //Draw the scores table
-                TextRenderer.DrawText(g, scoresHeader, this.Font, new Rectangle(0, spacing2, compoundChart.Width, 12), Color.Black);
-                TextRenderer.DrawText(g, scoreString, this.Font, new Rectangle(0, spacing3, compoundChart.Width, 12), Color.Black);
+                g.DrawString("Jouw scores", this.Font, brush, new RectangleF(20, spacing2, compoundChart.Width - 40, 12));
+                g.DrawString(scoresHeader, this.Font, brush, new RectangleF(20, spacing3, compoundChart.Width-40, 12));
+                g.DrawString(scoreString, this.Font, brush, new RectangleF(20, spacing4, compoundChart.Width-40, 12));
 
                 //Draw the advice
-                TextRenderer.DrawText(g, advice, this.Font, new Rectangle(0, spacing4, compoundChart.Width - 80, 200), Color.Black);
+                g.DrawString("Jouw advies", this.Font, brush, new RectangleF(20, spacing5, compoundChart.Width - 40, 12));
+                g.DrawString(advice, this.Font, brush, new Rectangle(20, spacing6, compoundChart.Width - 40, 400));
             }
 
 
