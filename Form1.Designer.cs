@@ -34,30 +34,35 @@
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title6 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series13 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series14 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series15 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series16 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title7 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title8 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series17 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series18 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title9 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.Title title10 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.comboBoxStudent = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -123,15 +128,19 @@
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StackedArea;
+            series1.Legend = "Legend1";
             series1.Name = "Groeps deviatie laag";
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StackedArea;
+            series2.Legend = "Legend1";
             series2.Name = "Groepsgemiddelde";
             series3.ChartArea = "ChartArea1";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StackedArea;
+            series3.Legend = "Legend1";
             series3.Name = "Groeps deviatie hoog";
             series4.ChartArea = "ChartArea1";
             series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Legend = "Legend1";
             series4.Name = "Leerling score";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
@@ -142,7 +151,12 @@
             this.chart1.Text = "chart1";
             title1.Name = "Closing";
             title1.Text = "Afsluiten";
+            title2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            title2.DockingOffset = -5;
+            title2.Name = "Les";
+            title2.Text = "Les";
             this.chart1.Titles.Add(title1);
+            this.chart1.Titles.Add(title2);
             // 
             // label1
             // 
@@ -334,9 +348,14 @@
             this.chart2.Size = new System.Drawing.Size(347, 221);
             this.chart2.TabIndex = 21;
             this.chart2.Text = "chart2";
-            title2.Name = "Empathy";
-            title2.Text = "Invoelen";
-            this.chart2.Titles.Add(title2);
+            title3.Name = "Empathy";
+            title3.Text = "Invoelen";
+            title4.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            title4.DockingOffset = -5;
+            title4.Name = "Les";
+            title4.Text = "Les";
+            this.chart2.Titles.Add(title3);
+            this.chart2.Titles.Add(title4);
             // 
             // chart3
             // 
@@ -365,9 +384,14 @@
             this.chart3.Size = new System.Drawing.Size(347, 221);
             this.chart3.TabIndex = 22;
             this.chart3.Text = "chart3";
-            title3.Name = "FindinDB";
-            title3.Text = "Opzoeken";
-            this.chart3.Titles.Add(title3);
+            title5.Name = "FindinDB";
+            title5.Text = "Opzoeken";
+            title6.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            title6.DockingOffset = -5;
+            title6.Name = "Les";
+            title6.Text = "Les";
+            this.chart3.Titles.Add(title5);
+            this.chart3.Titles.Add(title6);
             // 
             // chart4
             // 
@@ -396,9 +420,14 @@
             this.chart4.Size = new System.Drawing.Size(347, 221);
             this.chart4.TabIndex = 23;
             this.chart4.Text = "chart4";
-            title4.Name = "Inquire";
-            title4.Text = "Doorvragen";
-            this.chart4.Titles.Add(title4);
+            title7.Name = "Inquire";
+            title7.Text = "Doorvragen";
+            title8.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            title8.DockingOffset = -5;
+            title8.Name = "Les";
+            title8.Text = "Les";
+            this.chart4.Titles.Add(title7);
+            this.chart4.Titles.Add(title8);
             // 
             // chart5
             // 
@@ -427,9 +456,14 @@
             this.chart5.Size = new System.Drawing.Size(347, 221);
             this.chart5.TabIndex = 24;
             this.chart5.Text = "chart5";
-            title5.Name = "Polite";
-            title5.Text = "Vriendelijkheid";
-            this.chart5.Titles.Add(title5);
+            title9.Name = "Polite";
+            title9.Text = "Vriendelijkheid";
+            title10.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            title10.DockingOffset = -5;
+            title10.Name = "Les";
+            title10.Text = "Les";
+            this.chart5.Titles.Add(title9);
+            this.chart5.Titles.Add(title10);
             // 
             // Form1
             // 

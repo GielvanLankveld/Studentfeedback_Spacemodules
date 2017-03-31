@@ -571,10 +571,10 @@ namespace StudentFeedback_SpaceModules
                     comboBoxLes.SelectedItem.ToString());
 
                 //Request output
-                OutputToGraphic(studentKey);
+                GenerateOutputToGraphic(studentKey);
 
                 //Report completed
-                //MessageBox.Show("Output gemaakt");
+                MessageBox.Show("Output is gemaakt");
             }
             else
             {
@@ -582,7 +582,7 @@ namespace StudentFeedback_SpaceModules
             }
         }
 
-        private void OutputToGraphic(Tuple<String, String, String, String> key)
+        private void GenerateOutputToGraphic(Tuple<String, String, String, String> key)
         {
             String studentName = comboBoxStudent.SelectedItem.ToString();
             Record scores = records[key];
@@ -611,12 +611,13 @@ namespace StudentFeedback_SpaceModules
             Bitmap compoundChart = new Bitmap(closingBmp.Width * 3, closingBmp.Height * 5);
 
             //Set spacings between elements of the output
-            int spacing1 = 32; //Starting y of graphs
-            int spacing2 = spacing1 + (2 * closingBmp.Height);
-            int spacing3 = spacing2 + 12; //Starting y of tables
-            int spacing4 = spacing3 + 20;
-            int spacing5 = spacing4 + 12 + 20; //Starting y of advice
-            int spacing6 = spacing5 + 20;
+            int spacing0 = 32;
+            int spacing1 = spacing0 + 30;                           //Starting y of graphs
+            int spacing2 = spacing1 + (2 * closingBmp.Height)+12;   //Starting y of tables
+            int spacing3 = spacing2 + 18;                           //Distance between table title and labels
+            int spacing4 = spacing3 + 20;                           //Distance between labels and values in table
+            int spacing5 = spacing4 + 12 + 20;                      //Starting y of advice title
+            int spacing6 = spacing5 + 20;                           //Starting y of advice text
 
             using (Graphics g = Graphics.FromImage(compoundChart))
             {
@@ -630,13 +631,17 @@ namespace StudentFeedback_SpaceModules
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
                 Brush brush = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
                 g.DrawString(studentName, this.Font, brush, new RectangleF((compoundChart.Width/2)-50, 12, compoundChart.Width-40, 12));
-                
+
                 //Draw the graphs
+                g.DrawString("De onderstaande grafieken geven een overzicht van hoe jij het deed ten opzichte van de rest van de klas. "
+                    + "De rode lijn ben jij en de donkerblauwe lijn is het gemiddelde van de klas. "
+                    + "Alle scores die binnen de lichtblauwe lijnen vallen zitten nog binnen het gemiddelde.", 
+                    this.Font, brush, new RectangleF(20, spacing0, compoundChart.Width - 40, 30));
                 g.DrawImage(closingBmp, 0, spacing1);
                 g.DrawImage(empathyBmp, closingBmp.Width, spacing1);
                 g.DrawImage(findindbBmp, closingBmp.Width * 2, spacing1);
-                g.DrawImage(inquiregBmp, 0, closingBmp.Height + spacing1);
-                g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height + spacing1);
+                g.DrawImage(inquiregBmp, 0, closingBmp.Height + spacing1 + 20);
+                g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height + spacing1 + 20);
 
                 //Draw the scores table
                 g.DrawString("Jouw scores", this.Font, brush, new RectangleF(20, spacing2, compoundChart.Width - 40, 12));
@@ -659,7 +664,8 @@ namespace StudentFeedback_SpaceModules
             String advice = "Beste leerling. In dit overzicht krijg je uitleg over je prestaties in de Space Modules game. "
                             + "De Space Modules game is bedoeld om je beter te maken in communicatie en "
                             + "je krijgt nu per communicatie onderdeel feedback en advies. "
-                            + "Dit advies gaat over de laatste keer dat je speelde dus kijk in de grafieken telkens naar het meest rechtse punt.@@";
+                            + "Dit advies gaat over een geselecteerde les dus kijk in de grafieken op de plek "
+                            + "die bij de les hoort als je wilt zien hoe je het ten opzichte van de groep doet.@@";
             
             Tuple<String, String, String, String> recKey = recordToUse;
 
