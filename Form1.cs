@@ -584,7 +584,7 @@ namespace StudentFeedback_SpaceModules
 
         private void GenerateOutputToGraphic(Tuple<String, String, String, String> key)
         {
-            String studentName = comboBoxStudent.SelectedItem.ToString();
+            String studentName = key.Item1;
             Record scores = records[key];
 
             string scoresHeader = "Les\t\tAfsluiten\t\tInvoelen\t\tOpzoeken\tDoorvragen\tVriendelijkheid";
@@ -1024,32 +1024,39 @@ namespace StudentFeedback_SpaceModules
             //            comboBoxStudent.Items.Add(item.Item1);
             //}
 
-            //if (comboBoxStudent.Items.Count > 0)
-            //    comboBoxStudent.SelectedIndex = 0;
+            if (comboBoxStudent.Items.Count > 0)
+            {
+                //Select student to use
+                Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
+                        comboBoxStudent.SelectedItem.ToString(),
+                        comboBoxROC.SelectedItem.ToString(),
+                        comboBoxGroep.SelectedItem.ToString(),
+                        comboBoxLes.SelectedItem.ToString());
 
-            UpdateFeedback();
+                UpdateFeedback(studentKey);
+            }
         }
 
         private void comboBoxStudent_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateFeedback();
-        }
-
-        private void UpdateFeedback()
-        {
-            //Een student is geselecteerd, vul alle grafieken, tabellen en genereer advies
-
-            if (comboBoxStudent.Items.Count > 0)
-            {
-                selectedRecordKey = new Tuple<String, String, String, String>(
+            //Select student to use
+            Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
                     comboBoxStudent.SelectedItem.ToString(),
                     comboBoxROC.SelectedItem.ToString(),
                     comboBoxGroep.SelectedItem.ToString(),
                     comboBoxLes.SelectedItem.ToString());
 
-                fillCharts(selectedRecordKey);
-                fillTable(selectedRecordKey);
-                fillAdvice(selectedRecordKey);
+            UpdateFeedback(studentKey);
+        }
+
+        private void UpdateFeedback(Tuple<String, String, String, String> targetStudent)
+        {
+            //Een student is geselecteerd, vul alle grafieken, tabellen en genereer advies
+            if (comboBoxStudent.Items.Count > 0)
+            {
+                fillCharts(targetStudent);
+                fillTable(targetStudent);
+                fillAdvice(targetStudent);
             }
 
             
@@ -1185,6 +1192,42 @@ namespace StudentFeedback_SpaceModules
         private void button3_Click(object sender, EventArgs e)
         {
             //Itereer door alle studenten heen voor een gegeven ROC, groep en les
+            if (comboBoxStudent.Items.Count > 0)
+            {
+                Tuple<String, String, String, String> studentKey;
+                for (int student = 0; student < comboBoxStudent.Items.Count;student++)
+                {
+
+                    //Pick student to output
+                    studentKey = new Tuple<String, String, String, String>(
+                    comboBoxStudent.Items[student].ToString(),
+                    comboBoxROC.SelectedItem.ToString(),
+                    comboBoxGroep.SelectedItem.ToString(),
+                    comboBoxLes.SelectedItem.ToString());
+
+                    //Visualize selected student data
+                    UpdateFeedback(studentKey);
+
+                    //Request output
+                    GenerateOutputToGraphic(studentKey);
+                }
+
+                //Reset visualizations to original student
+                Tuple<String, String, String, String> studentKey2 = new Tuple<String, String, String, String>(
+                        comboBoxStudent.SelectedItem.ToString(),
+                        comboBoxROC.SelectedItem.ToString(),
+                        comboBoxGroep.SelectedItem.ToString(),
+                        comboBoxLes.SelectedItem.ToString());
+
+                UpdateFeedback(studentKey2);
+
+                //Report completed
+                MessageBox.Show("Output is gemaakt");
+            }
+            else
+            {
+                MessageBox.Show("Output kon niet worden gemaakt omdat er geen student geselecteerd is.");
+            }
         }
     }
 }
