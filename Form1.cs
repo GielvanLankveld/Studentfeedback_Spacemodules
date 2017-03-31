@@ -585,77 +585,79 @@ namespace StudentFeedback_SpaceModules
         private void GenerateOutputToGraphic(Tuple<String, String, String, String> key)
         {
             String studentName = key.Item1;
-            Record scores = records[key];
-
-            string scoresHeader = "Les\t\tAfsluiten\t\tInvoelen\t\tOpzoeken\tDoorvragen\tVriendelijkheid";
-            string scoreString = key.Item4.ToString()+"\t\t"+scores.Score1 + "\t\t" + scores.Score2 
-                + "\t\t" + scores.Score3 + "\t\t" + scores.Score4 + "\t\t" + scores.Score5;
-
-            String advice = richTextBox1.Text;
-
-            //Generate output for student
-            Bitmap closingBmp = new Bitmap(chart1.Width, chart1.Height);
-            Bitmap empathyBmp = new Bitmap(chart1.Width, chart1.Height);
-            Bitmap findindbBmp = new Bitmap(chart1.Width, chart1.Height);
-            Bitmap inquiregBmp = new Bitmap(chart1.Width, chart1.Height);
-            Bitmap politeBmp = new Bitmap(chart1.Width, chart1.Height);
-
-            //Put the chart in a bitmap
-            chart1.DrawToBitmap(closingBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-            chart2.DrawToBitmap(empathyBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-            chart3.DrawToBitmap(findindbBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-            chart4.DrawToBitmap(inquiregBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-            chart5.DrawToBitmap(politeBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
-
-            //Bitmap into which the final output will go
-            Bitmap compoundChart = new Bitmap(closingBmp.Width * 3, closingBmp.Height * 5);
-
-            //Set spacings between elements of the output
-            int spacing0 = 32;
-            int spacing1 = spacing0 + 30;                           //Starting y of graphs
-            int spacing2 = spacing1 + (2 * closingBmp.Height)+12;   //Starting y of tables
-            int spacing3 = spacing2 + 18;                           //Distance between table title and labels
-            int spacing4 = spacing3 + 20;                           //Distance between labels and values in table
-            int spacing5 = spacing4 + 12 + 20;                      //Starting y of advice title
-            int spacing6 = spacing5 + 20;                           //Starting y of advice text
-
-            using (Graphics g = Graphics.FromImage(compoundChart))
+            Record scores;
+            if (records.TryGetValue(key, out scores))
             {
-                //Make the entire background white
-                using (SolidBrush sBrush = new SolidBrush(Color.FromArgb(255, 255, 255)))
+                string scoresHeader = "Les\t\tAfsluiten\t\tInvoelen\t\tOpzoeken\tDoorvragen\tVriendelijkheid";
+                string scoreString = key.Item4.ToString() + "\t\t" + scores.Score1 + "\t\t" + scores.Score2
+                    + "\t\t" + scores.Score3 + "\t\t" + scores.Score4 + "\t\t" + scores.Score5;
+
+                String advice = richTextBox1.Text;
+
+                //Generate output for student
+                Bitmap closingBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap empathyBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap findindbBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap inquiregBmp = new Bitmap(chart1.Width, chart1.Height);
+                Bitmap politeBmp = new Bitmap(chart1.Width, chart1.Height);
+
+                //Put the chart in a bitmap
+                chart1.DrawToBitmap(closingBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                chart2.DrawToBitmap(empathyBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                chart3.DrawToBitmap(findindbBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                chart4.DrawToBitmap(inquiregBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+                chart5.DrawToBitmap(politeBmp, new Rectangle(0, 0, chart1.Width, chart1.Height));
+
+                //Bitmap into which the final output will go
+                Bitmap compoundChart = new Bitmap(closingBmp.Width * 3, closingBmp.Height * 5);
+
+                //Set spacings between elements of the output
+                int spacing0 = 32;
+                int spacing1 = spacing0 + 30;                           //Starting y of graphs
+                int spacing2 = spacing1 + (2 * closingBmp.Height) + 12;   //Starting y of tables
+                int spacing3 = spacing2 + 18;                           //Distance between table title and labels
+                int spacing4 = spacing3 + 20;                           //Distance between labels and values in table
+                int spacing5 = spacing4 + 12 + 20;                      //Starting y of advice title
+                int spacing6 = spacing5 + 20;                           //Starting y of advice text
+
+                using (Graphics g = Graphics.FromImage(compoundChart))
                 {
-                    g.FillRectangle(sBrush, 0, 0, compoundChart.Width, compoundChart.Height);
+                    //Make the entire background white
+                    using (SolidBrush sBrush = new SolidBrush(Color.FromArgb(255, 255, 255)))
+                    {
+                        g.FillRectangle(sBrush, 0, 0, compoundChart.Width, compoundChart.Height);
+                    }
+
+                    //Write the student name
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                    Brush brush = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
+                    g.DrawString(studentName, this.Font, brush, new RectangleF((compoundChart.Width / 2) - 50, 12, compoundChart.Width - 40, 12));
+
+                    //Draw the graphs
+                    g.DrawString("De onderstaande grafieken geven een overzicht van hoe jij het deed ten opzichte van de rest van de klas. "
+                        + "De rode lijn ben jij en de donkerblauwe lijn is het gemiddelde van de klas. "
+                        + "Alle scores die binnen de lichtblauwe lijnen vallen zitten nog binnen het gemiddelde.",
+                        this.Font, brush, new RectangleF(20, spacing0, compoundChart.Width - 40, 30));
+                    g.DrawImage(closingBmp, 0, spacing1);
+                    g.DrawImage(empathyBmp, closingBmp.Width, spacing1);
+                    g.DrawImage(findindbBmp, closingBmp.Width * 2, spacing1);
+                    g.DrawImage(inquiregBmp, 0, closingBmp.Height + spacing1 + 20);
+                    g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height + spacing1 + 20);
+
+                    //Draw the scores table
+                    g.DrawString("Jouw scores", this.Font, brush, new RectangleF(20, spacing2, compoundChart.Width - 40, 12));
+                    g.DrawString(scoresHeader, this.Font, brush, new RectangleF(20, spacing3, compoundChart.Width - 40, 12));
+                    g.DrawString(scoreString, this.Font, brush, new RectangleF(20, spacing4, compoundChart.Width - 40, 12));
+
+                    //Draw the advice
+                    g.DrawString("Jouw advies", this.Font, brush, new RectangleF(20, spacing5, compoundChart.Width - 40, 12));
+                    g.DrawString(advice, this.Font, brush, new Rectangle(20, spacing6, compoundChart.Width - 40, 400));
                 }
 
-                //Write the student name
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                Brush brush = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-                g.DrawString(studentName, this.Font, brush, new RectangleF((compoundChart.Width/2)-50, 12, compoundChart.Width-40, 12));
 
-                //Draw the graphs
-                g.DrawString("De onderstaande grafieken geven een overzicht van hoe jij het deed ten opzichte van de rest van de klas. "
-                    + "De rode lijn ben jij en de donkerblauwe lijn is het gemiddelde van de klas. "
-                    + "Alle scores die binnen de lichtblauwe lijnen vallen zitten nog binnen het gemiddelde.", 
-                    this.Font, brush, new RectangleF(20, spacing0, compoundChart.Width - 40, 30));
-                g.DrawImage(closingBmp, 0, spacing1);
-                g.DrawImage(empathyBmp, closingBmp.Width, spacing1);
-                g.DrawImage(findindbBmp, closingBmp.Width * 2, spacing1);
-                g.DrawImage(inquiregBmp, 0, closingBmp.Height + spacing1 + 20);
-                g.DrawImage(politeBmp, closingBmp.Width, closingBmp.Height + spacing1 + 20);
-
-                //Draw the scores table
-                g.DrawString("Jouw scores", this.Font, brush, new RectangleF(20, spacing2, compoundChart.Width - 40, 12));
-                g.DrawString(scoresHeader, this.Font, brush, new RectangleF(20, spacing3, compoundChart.Width-40, 12));
-                g.DrawString(scoreString, this.Font, brush, new RectangleF(20, spacing4, compoundChart.Width-40, 12));
-
-                //Draw the advice
-                g.DrawString("Jouw advies", this.Font, brush, new RectangleF(20, spacing5, compoundChart.Width - 40, 12));
-                g.DrawString(advice, this.Font, brush, new Rectangle(20, spacing6, compoundChart.Width - 40, 400));
+                //Output the feedback
+                compoundChart.Save(defaultOutputDirectory + "\\" + studentName + ".bmp");
             }
-
-
-            //Output the feedback
-            compoundChart.Save(defaultOutputDirectory + "\\" + studentName + ".bmp");
         }
 
         private void fillAdvice(Tuple<String, String, String, String> recordToUse)
