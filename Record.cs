@@ -23,5 +23,6 @@
         public int Score3;
         public int Score4;
         public int Score5;
+        public string email;
     }
 }

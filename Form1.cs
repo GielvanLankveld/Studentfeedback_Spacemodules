@@ -17,7 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
+using System.IO;
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -202,6 +205,7 @@ namespace StudentFeedback_SpaceModules
                 if (int.TryParse(items[labelList["Find in DB"]], out tempRec.Score3) != true) tempRec.Score3 = 0;
                 if (int.TryParse(items[labelList["Inquire"]], out tempRec.Score4) != true) tempRec.Score4 = 0;
                 if (int.TryParse(items[labelList["Polite"]], out tempRec.Score5) != true) tempRec.Score5 = 0;
+                tempRec.email = items[labelList["StudentID"]];
 
                 Tuple<String, String, String, String> key = new Tuple<String, String, String, String>(items[labelList["ROC"]], items[labelList["Groep"]], items[labelList["Sessie"]], items[labelList["Naam"]].ToString());
                 if (!inputList.ContainsKey(key) && key.Item1 != "" && key.Item2 != "" && key.Item3 != "" && key.Item4 != "")
@@ -558,7 +562,12 @@ namespace StudentFeedback_SpaceModules
 
             comboBoxStudent.Enabled = true;
             comboBoxStudent.Items.Clear();
-            
+
+            button2.Enabled = true;
+            button3.Enabled = true;
+            button4.Enabled = true;
+            button5.Enabled = true;
+
             //Fill the variables
             foreach (Tuple<String, String, String, String> item in records.Keys)
             {
@@ -700,11 +709,10 @@ namespace StudentFeedback_SpaceModules
                     g.DrawString("Jouw advies", this.Font, brush, new RectangleF(20, spacing5, compoundChart.Width - 40, 12));
                     g.DrawString(advice, this.Font, brush, new Rectangle(20, spacing6, compoundChart.Width - 40, 400));
                 }
-
-
+                
                 //Output the feedback
                 System.IO.Directory.CreateDirectory(defaultOutputDirectory + "\\" + key.Item1 + "_" + key.Item2 + "_" + key.Item3);
-                compoundChart.Save(defaultOutputDirectory + "\\" + key.Item1 + "_" + key.Item2 + "_" + key.Item3 + "\\" + studentName + ".bmp");
+                compoundChart.Save(defaultOutputDirectory + "\\" + key.Item1 + "_" + key.Item2 + "_" + key.Item3 + "\\" + records[key].email + "_" + studentName + ".bmp");
             }
         }
 
@@ -1220,6 +1228,139 @@ namespace StudentFeedback_SpaceModules
             {
                 MessageBox.Show("Output kon niet worden gemaakt omdat er geen student geselecteerd is.");
             }
+        }
+
+        private void emailFeedback(String directory, String file)
+        {
+            //This function will try to email a target file to the email address included in its filename (email_studentname)
+
+            //Split file details
+            string[] stringSeparators = new string[] { "_" };
+            string[] fileName = file.Split(stringSeparators, StringSplitOptions.None);
+            String targetEmail = fileName[0];
+            String targetStudent = fileName[1];
+
+            //Split directory details
+            string[] directoryName = directory.Split(stringSeparators, StringSplitOptions.None);
+            String targetROC = directoryName[0];
+            String targetGroup = directoryName[1];
+            String targetLesson = directoryName[2];
+
+            var fromAddress = new MailAddress("splonderzoek@gmail.com", "SPL onderzoek");
+            var toAddress = new MailAddress(targetEmail, targetStudent);
+            const string fromPassword = "spl123Onderzoek";
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                //Set up mail
+                Subject = "Space Modules feedback les " + targetLesson,
+                Body = "Beste student,\n\nIn deze email vind je jouw persoonlijke feedback voor les " + targetLesson +
+                    ". Bekijk het plaatje in de attachments goed om te zien hoe jij het gedaan hebt ten opzichte van de groep en " +
+                    "lees het advies om te zien wat je kunt verbeteren en welke tips je daarvoor krijgt.\n\n"+
+                    "Vriendelijke groeten,\nSPL onderzoek",
+            })
+            {
+                // Create the file attachment for this e-mail message.
+                Attachment data = new System.Net.Mail.Attachment(defaultOutputDirectory + "\\" + directory + "\\" + file + ".bmp");
+
+                // Add time stamp information for the file.
+                ContentDisposition disposition = data.ContentDisposition;
+                disposition.CreationDate = System.IO.File.GetCreationTime(file);
+                disposition.ModificationDate = System.IO.File.GetLastWriteTime(file);
+                disposition.ReadDate = System.IO.File.GetLastAccessTime(file);
+
+                // Add the file attachment to this e-mail message.
+                message.Attachments.Add(data);
+
+                smtp.Send(message);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //Genereer target student/les
+            //Pick student to output
+            Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
+                comboBoxROC.SelectedItem.ToString(),
+                comboBoxGroep.SelectedItem.ToString(),
+                comboBoxLes.SelectedItem.ToString(),
+                comboBoxStudent.SelectedItem.ToString());
+
+            String file = records[studentKey].email + "_" + comboBoxStudent.SelectedItem.ToString();
+
+            String directory = comboBoxROC.SelectedItem.ToString() + "_" +
+                comboBoxGroep.SelectedItem.ToString() + "_" +
+                comboBoxLes.SelectedItem.ToString();
+            
+            if (File.Exists(defaultOutputDirectory+"\\" + directory +"\\"+file+".bmp"))
+            {
+                emailFeedback(directory, file);
+
+                //Report sent
+                MessageBox.Show("Email verstuurd");
+            }
+            else
+            {
+                //Report error
+                MessageBox.Show("Mail kon niet worden verstuurd omdat bestand niet bestaat");
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            int verstuurd = 0;
+            int nietVerstuurd = 0;
+
+            //Email feedback to all students in selected group/lesson combo
+            foreach (string student in comboBoxStudent.Items)
+            {
+                //Genereer target student/les
+                //Pick student to output
+                Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
+                    comboBoxROC.SelectedItem.ToString(),
+                    comboBoxGroep.SelectedItem.ToString(),
+                    comboBoxLes.SelectedItem.ToString(),
+                    student);
+
+                String directory = comboBoxROC.SelectedItem.ToString() + "_" +
+                    comboBoxGroep.SelectedItem.ToString() + "_" +
+                    comboBoxLes.SelectedItem.ToString();
+
+                //If there is a record for the student, send an email
+                if (records.ContainsKey(studentKey))
+                {
+                    String file = records[studentKey].email + "_" + student;
+
+                    if (File.Exists(defaultOutputDirectory + "\\" + directory + "\\" + file + ".bmp"))
+                    {
+                        emailFeedback(directory, file);
+
+                        //Report sent
+                        verstuurd++;
+                    }
+                    else
+                    {
+                        //Report error
+                        nietVerstuurd++;
+                    }
+                }
+                else
+                {
+                    //Report error
+                    nietVerstuurd++;
+                }
+            }
+
+            MessageBox.Show(verstuurd + " email(s) verstuurd, " + nietVerstuurd + " email(s) niet verstuurd");
         }
     }
 }
