@@ -636,7 +636,7 @@ namespace StudentFeedback_SpaceModules
             if (records.TryGetValue(key, out scores))
             {
                 string scoresHeader = "Les\t\tAfsluiten\t\tInvoelen\t\tOpzoeken\tDoorvragen\tVriendelijkheid";
-                string scoreString = key.Item4.ToString() + "\t\t" + scores.Score1 + "\t\t" + scores.Score2
+                string scoreString = key.Item3.ToString() + "\t\t" + scores.Score1 + "\t\t" + scores.Score2
                     + "\t\t" + scores.Score3 + "\t\t" + scores.Score4 + "\t\t" + scores.Score5;
 
                 String advice = richTextBox1.Text;
@@ -683,7 +683,7 @@ namespace StudentFeedback_SpaceModules
                     //Draw the graphs
                     g.DrawString("De onderstaande grafieken geven een overzicht van hoe jij het deed ten opzichte van de rest van de klas. "
                         + "De rode lijn ben jij en de donkerblauwe lijn is het gemiddelde van de klas. "
-                        + "Alle scores die binnen de lichtblauwe lijnen vallen zitten nog binnen het gemiddelde.",
+                        + "Alle scores die binnen de lichtblauwe lijnen vallen zitten nog binnen het gemiddelde van de klas.",
                         this.Font, brush, new RectangleF(20, spacing0, compoundChart.Width - 40, 30));
                     g.DrawImage(closingBmp, 0, spacing1);
                     g.DrawImage(empathyBmp, closingBmp.Width, spacing1);
