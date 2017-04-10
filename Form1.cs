@@ -35,7 +35,7 @@ namespace StudentFeedback_SpaceModules
         private Dictionary<Tuple<String,String,String,String>, Record> records;
         private Dictionary<Tuple<String, String, String, String>, Distribution> distributionsDictionary = 
             new Dictionary<Tuple<String, String, String, String>, Distribution>();
-        private Tuple<String, String, String, String> selectedRecordKey;
+        //private Tuple<String, String, String, String> selectedRecordKey;
         private String defaultOutputDirectory = System.Configuration.ConfigurationManager.AppSettings["defaultOutputDirectory"];
         private String defaultInputDirectory = System.Configuration.ConfigurationManager.AppSettings["defaultInputDirectory"];
 
@@ -612,10 +612,10 @@ namespace StudentFeedback_SpaceModules
             {
                 //Pick student to output
                 Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
-                    comboBoxStudent.SelectedItem.ToString(),
                     comboBoxROC.SelectedItem.ToString(),
                     comboBoxGroep.SelectedItem.ToString(),
-                    comboBoxLes.SelectedItem.ToString());
+                    comboBoxLes.SelectedItem.ToString(),
+                    comboBoxStudent.SelectedItem.ToString());
 
                 //Request output
                 GenerateOutputToGraphic(studentKey);
@@ -631,7 +631,7 @@ namespace StudentFeedback_SpaceModules
 
         private void GenerateOutputToGraphic(Tuple<String, String, String, String> key)
         {
-            String studentName = key.Item1;
+            String studentName = key.Item4;
             Record scores;
             if (records.TryGetValue(key, out scores))
             {
@@ -703,7 +703,8 @@ namespace StudentFeedback_SpaceModules
 
 
                 //Output the feedback
-                compoundChart.Save(defaultOutputDirectory + "\\" + studentName + ".bmp");
+                System.IO.Directory.CreateDirectory(defaultOutputDirectory + "\\" + key.Item1 + "_" + key.Item2 + "_" + key.Item3);
+                compoundChart.Save(defaultOutputDirectory + "\\" + key.Item1 + "_" + key.Item2 + "_" + key.Item3 + "\\" + studentName + ".bmp");
             }
         }
 
@@ -1190,10 +1191,10 @@ namespace StudentFeedback_SpaceModules
 
                     //Pick student to output
                     studentKey = new Tuple<String, String, String, String>(
-                    comboBoxStudent.Items[student].ToString(),
                     comboBoxROC.SelectedItem.ToString(),
                     comboBoxGroep.SelectedItem.ToString(),
-                    comboBoxLes.SelectedItem.ToString());
+                    comboBoxLes.SelectedItem.ToString(),
+                    comboBoxStudent.Items[student].ToString());
 
                     //Visualize selected student data
                     UpdateFeedback(studentKey);
@@ -1204,10 +1205,11 @@ namespace StudentFeedback_SpaceModules
 
                 //Reset visualizations to originally selected student
                 Tuple<String, String, String, String> studentKey2 = new Tuple<String, String, String, String>(
-                        comboBoxStudent.SelectedItem.ToString(),
+                        
                         comboBoxROC.SelectedItem.ToString(),
                         comboBoxGroep.SelectedItem.ToString(),
-                        comboBoxLes.SelectedItem.ToString());
+                        comboBoxLes.SelectedItem.ToString(),
+                        comboBoxStudent.SelectedItem.ToString());
 
                 UpdateFeedback(studentKey2);
 
