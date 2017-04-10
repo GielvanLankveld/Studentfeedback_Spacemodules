@@ -25,6 +25,13 @@ namespace StudentFeedback_SpaceModules
 {
     public partial class Form1 : Form
     {
+        /*
+         * Closing
+         * Empathy
+         * Find in DB
+         * Inquire
+         * Polite
+         */
         private Dictionary<Tuple<String,String,String,String>, Record> records;
         private Dictionary<Tuple<String, String, String, String>, Distribution> distributionsDictionary = 
             new Dictionary<Tuple<String, String, String, String>, Distribution>();
@@ -148,19 +155,38 @@ namespace StudentFeedback_SpaceModules
 
             string[] stringSeparators = new string[] { "," };
 
+            //Extract the column labels from the datafile
+            string[] labels = lines[0].Split(stringSeparators, StringSplitOptions.None);
+            Dictionary<string, int> labelList = new Dictionary<string, int>();
+
+            for (var i = 0; i < labels.Length; i++)
+            {
+                labelList.Add(labels[i], i);
+            }
+
             //Parse the file
             for (var i = 2; i < lines.Length; i++)
             {
+                /*
+                 * Closing
+                 * Empathy
+                 * Find in DB
+                 * Inquire
+                 * Polite
+                 */
                 string[] items = lines[i].Split(stringSeparators, StringSplitOptions.None);
                 Record tempRec = new Record();
-                if (int.TryParse(items[4], out tempRec.Score1) != true) tempRec.Score1 = 0;
-                if (int.TryParse(items[5], out tempRec.Score2) != true) tempRec.Score2 = 0;
-                if (int.TryParse(items[6], out tempRec.Score3) != true) tempRec.Score3 = 0;
-                if (int.TryParse(items[7], out tempRec.Score4) != true) tempRec.Score4 = 0;
-                if (int.TryParse(items[8], out tempRec.Score5) != true) tempRec.Score5 = 0;
+                if (int.TryParse(items[labelList["Closing"]], out tempRec.Score1) != true) tempRec.Score1 = 0;
+                if (int.TryParse(items[labelList["Empathy"]], out tempRec.Score2) != true) tempRec.Score2 = 0;
+                if (int.TryParse(items[labelList["Find in DB"]], out tempRec.Score3) != true) tempRec.Score3 = 0;
+                if (int.TryParse(items[labelList["Inquire"]], out tempRec.Score4) != true) tempRec.Score4 = 0;
+                if (int.TryParse(items[labelList["Polite"]], out tempRec.Score5) != true) tempRec.Score5 = 0;
 
-                Tuple<String, String, String, String> key = new Tuple<String, String, String, String>(items[0], items[1], items[2], items[3].ToString());
-                inputList.Add(key,tempRec);
+                Tuple<String, String, String, String> key = new Tuple<String, String, String, String>(items[labelList["ROC"]], items[labelList["Groep"]], items[labelList["Sessie"]], items[labelList["Naam"]].ToString());
+                if (!inputList.ContainsKey(key) && key.Item1 != "" && key.Item2 != "" && key.Item3 != "" && key.Item4 != "")
+                {
+                    inputList.Add(key,tempRec);
+                }
             }
 
             //Output the individual scores lists and the distributions
@@ -175,7 +201,7 @@ namespace StudentFeedback_SpaceModules
             foreach (Tuple<String, String, String, String> item in records.Keys)
             {
                 //Update closing
-                Tuple<String, String, String, String> key = new Tuple<String, String, String, String>("closing",item.Item2,item.Item3,item.Item4);
+                Tuple<String, String, String, String> key = new Tuple<String, String, String, String>("Closing",item.Item1,item.Item2,item.Item3);
                 if (!distributionsDictionary.TryGetValue(key, out tempDist))
                 {
                     tempDist = new Distribution();
@@ -185,7 +211,7 @@ namespace StudentFeedback_SpaceModules
                 distributionsDictionary.Add(key, tempDist);
 
                 // Update empathy
-                key = new Tuple<String, String, String, String>("empathy", item.Item2, item.Item3, item.Item4);
+                key = new Tuple<String, String, String, String>("Empathy", item.Item1, item.Item2, item.Item3);
                 if (!distributionsDictionary.TryGetValue(key, out tempDist))
                 {
                     tempDist = new Distribution();
@@ -196,7 +222,7 @@ namespace StudentFeedback_SpaceModules
 
                 // Update find in db
                 tempDist = new Distribution();
-                key = new Tuple<String, String, String, String>("findindb", item.Item2, item.Item3, item.Item4);
+                key = new Tuple<String, String, String, String>("Find in DB", item.Item1, item.Item2, item.Item3);
                 if (!distributionsDictionary.TryGetValue(key, out tempDist))
                 {
                     tempDist = new Distribution();
@@ -207,7 +233,7 @@ namespace StudentFeedback_SpaceModules
 
                 // Update inquire
                 tempDist = new Distribution();
-                key = new Tuple<String, String, String, String>("inquire", item.Item2, item.Item3, item.Item4);
+                key = new Tuple<String, String, String, String>("Inquire", item.Item1, item.Item2, item.Item3);
                 if (!distributionsDictionary.TryGetValue(key, out tempDist))
                 {
                     tempDist = new Distribution();
@@ -218,7 +244,7 @@ namespace StudentFeedback_SpaceModules
 
                 // Update polite
                 tempDist = new Distribution();
-                key = new Tuple<String, String, String, String>("polite", item.Item2, item.Item3, item.Item4);
+                key = new Tuple<String, String, String, String>("Polite", item.Item1, item.Item2, item.Item3);
                 if (!distributionsDictionary.TryGetValue(key, out tempDist))
                 {
                     tempDist = new Distribution();
@@ -515,8 +541,8 @@ namespace StudentFeedback_SpaceModules
             //Fill the variables
             foreach (Tuple<String, String, String, String> item in records.Keys)
             {
-                if (!comboBoxROC.Items.Contains(item.Item2))
-                    comboBoxROC.Items.Add(item.Item2);
+                if (!comboBoxROC.Items.Contains(item.Item1))
+                    comboBoxROC.Items.Add(item.Item1);
             }
 
             if (comboBoxROC.Items.Count > 0)
@@ -525,9 +551,9 @@ namespace StudentFeedback_SpaceModules
 
                 foreach (Tuple<String, String, String, String> item in records.Keys)
                 {
-                    if (comboBoxROC.SelectedItem.ToString() == item.Item2) 
-                        if (!comboBoxGroep.Items.Contains(item.Item3))
-                            comboBoxGroep.Items.Add(item.Item3);
+                    if (comboBoxROC.SelectedItem.ToString() == item.Item1) 
+                        if (!comboBoxGroep.Items.Contains(item.Item2))
+                            comboBoxGroep.Items.Add(item.Item2);
                 }
 
                 if (comboBoxGroep.Items.Count > 0)
@@ -536,9 +562,9 @@ namespace StudentFeedback_SpaceModules
 
                     foreach (Tuple<String, String, String, String> item in records.Keys)
                     {
-                        if (comboBoxROC.SelectedItem.ToString() == item.Item2 && comboBoxGroep.SelectedItem.ToString() == item.Item3)
-                            if (!comboBoxLes.Items.Contains(item.Item4))
-                                comboBoxLes.Items.Add(item.Item4);
+                        if (comboBoxROC.SelectedItem.ToString() == item.Item1 && comboBoxGroep.SelectedItem.ToString() == item.Item2)
+                            if (!comboBoxLes.Items.Contains(item.Item3))
+                                comboBoxLes.Items.Add(item.Item3);
                     }
 
                     if (comboBoxLes.Items.Count > 0)
@@ -547,9 +573,9 @@ namespace StudentFeedback_SpaceModules
 
                         foreach (Tuple<String, String, String, String> item in records.Keys)
                         {
-                            if (comboBoxROC.SelectedItem.ToString() == item.Item2 && comboBoxGroep.SelectedItem.ToString() == item.Item3 && comboBoxLes.SelectedItem.ToString() == item.Item4)
-                                if (!comboBoxStudent.Items.Contains(item.Item1))
-                                    comboBoxStudent.Items.Add(item.Item1);
+                            if (comboBoxROC.SelectedItem.ToString() == item.Item1 && comboBoxGroep.SelectedItem.ToString() == item.Item2 && comboBoxLes.SelectedItem.ToString() == item.Item3)
+                                if (!comboBoxStudent.Items.Contains(item.Item4))
+                                    comboBoxStudent.Items.Add(item.Item4);
                         }
 
                         if (comboBoxStudent.Items.Count > 0)
@@ -671,11 +697,11 @@ namespace StudentFeedback_SpaceModules
             
             Tuple<String, String, String, String> recKey = recordToUse;
 
-            Tuple<String, String, String, String> closingKey = new Tuple<String, String, String, String>("closing", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> empathyKey = new Tuple<String, String, String, String>("empathy", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> findindbKey = new Tuple<String, String, String, String>("findindb", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> inquireKey = new Tuple<String, String, String, String>("inquire", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> politeKey = new Tuple<String, String, String, String>("polite", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
+            Tuple<String, String, String, String> closingKey = new Tuple<String, String, String, String>("Closing", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> empathyKey = new Tuple<String, String, String, String>("Empathy", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> findindbKey = new Tuple<String, String, String, String>("Find in DB", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> inquireKey = new Tuple<String, String, String, String>("Inquire", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> politeKey = new Tuple<String, String, String, String>("Polite", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
 
             //Check to see if there are data for this student in this lesson
             Record tempRec = new Record();
@@ -727,7 +753,7 @@ namespace StudentFeedback_SpaceModules
             {
                 if (record.Item1 == recordToUse.Item1 && record.Item2 == recordToUse.Item2 && record.Item3 == recordToUse.Item3 && record.Item4 == recordToUse.Item4)
                 {
-                    dataGridView2.Rows.Add(record.Item2,record.Item3,record.Item4,records[record].Score1, records[record].Score2, records[record].Score3, records[record].Score4, records[record].Score5);
+                    dataGridView2.Rows.Add(record.Item1,record.Item2,record.Item3,records[record].Score1, records[record].Score2, records[record].Score3, records[record].Score4, records[record].Score5);
                 }
             }
         }
@@ -735,11 +761,11 @@ namespace StudentFeedback_SpaceModules
         private void fillCharts(Tuple<String, String, String, String> recordToUse)
         {
             //Set keys
-            Tuple<String, String, String, String> closingKey = new Tuple<String, String, String, String>("closing",recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> empathyKey = new Tuple<String, String, String, String>("empathy", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> findindbKey = new Tuple<String, String, String, String>("findindb", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> inquireKey = new Tuple<String, String, String, String>("inquire", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
-            Tuple<String, String, String, String> politeKey = new Tuple<String, String, String, String>("polite", recordToUse.Item2, recordToUse.Item3, recordToUse.Item4);
+            Tuple<String, String, String, String> closingKey = new Tuple<String, String, String, String>("Closing", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> empathyKey = new Tuple<String, String, String, String>("Empathy", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> findindbKey = new Tuple<String, String, String, String>("Find in DB", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> inquireKey = new Tuple<String, String, String, String>("Inquire", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
+            Tuple<String, String, String, String> politeKey = new Tuple<String, String, String, String>("Polite", recordToUse.Item1, recordToUse.Item2, recordToUse.Item3);
 
             //Get mean series from charts
             Series closingMean = chart1.Series.FindByName("Groepsgemiddelde");
@@ -791,22 +817,11 @@ namespace StudentFeedback_SpaceModules
                 if (key.Item1 == closingKey.Item1 && 
                     key.Item2 == closingKey.Item2 &&
                     key.Item3 == closingKey.Item3)
-                    tempDict.Add(key, distributionsDictionary[key]);
-                    
-            }
-            for (int i = 1; i <= tempDict.Count; i++)
-            {
-                Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
-                    closingKey.Item1, closingKey.Item2, closingKey.Item3, i.ToString());
-
-                closingSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
-                closingMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-                closingSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-
-                //This code works with linecharts but not with stacked-areacharts
-                //closingMean.Points.AddXY(i,tempDict[tempKey].mean);
-                //closingSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                //closingSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                {
+                    closingSDL.Points.AddXY(key.Item4, distributionsDictionary[key].mean - distributionsDictionary[key].standardDeviation);
+                    closingMean.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                    closingSDH.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                }
             }
 
             //Empathy
@@ -816,21 +831,11 @@ namespace StudentFeedback_SpaceModules
                 if (key.Item1 == empathyKey.Item1 &&
                     key.Item2 == empathyKey.Item2 &&
                     key.Item3 == empathyKey.Item3)
-                    tempDict.Add(key, distributionsDictionary[key]);
-
-            }
-            for (int i = 1; i <= tempDict.Count; i++)
-            {
-                Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
-                    empathyKey.Item1, empathyKey.Item2, empathyKey.Item3, i.ToString());
-
-                empathySDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
-                empathyMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-                empathySDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-
-                //empathyMean.Points.AddXY(i,tempDict[tempKey].mean);
-                //empathySDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                //empathySDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                {
+                    empathySDL.Points.AddXY(key.Item4, distributionsDictionary[key].mean - distributionsDictionary[key].standardDeviation);
+                    empathyMean.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                    empathySDH.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                }
             }
 
             //Find in db
@@ -840,21 +845,11 @@ namespace StudentFeedback_SpaceModules
                 if (key.Item1 == findindbKey.Item1 &&
                     key.Item2 == findindbKey.Item2 &&
                     key.Item3 == findindbKey.Item3)
-                    tempDict.Add(key, distributionsDictionary[key]);
-
-            }
-            for (int i = 1; i <= tempDict.Count; i++)
-            {
-                Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
-                    findindbKey.Item1, findindbKey.Item2, findindbKey.Item3, i.ToString());
-
-                findindbSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
-                findindbMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-                findindbSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-
-                //findindbMean.Points.AddXY(i,tempDict[tempKey].mean);
-                //findindbSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                //findindbSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                {
+                    findindbSDL.Points.AddXY(key.Item4, distributionsDictionary[key].mean - distributionsDictionary[key].standardDeviation);
+                    findindbMean.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                    findindbSDH.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                }
             }
             
             //Inquire
@@ -864,21 +859,11 @@ namespace StudentFeedback_SpaceModules
                 if (key.Item1 == inquireKey.Item1 &&
                     key.Item2 == inquireKey.Item2 &&
                     key.Item3 == inquireKey.Item3)
-                    tempDict.Add(key, distributionsDictionary[key]);
-
-            }
-            for (int i = 1; i <= tempDict.Count; i++)
-            {
-                Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
-                    inquireKey.Item1, inquireKey.Item2, inquireKey.Item3, i.ToString());
-
-                inquireSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
-                inquireMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-                inquireSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-
-                //inquireMean.Points.AddXY(i,tempDict[tempKey].mean);
-                //inquireSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                //inquireSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                {
+                    inquireSDL.Points.AddXY(key.Item4, distributionsDictionary[key].mean - distributionsDictionary[key].standardDeviation);
+                    inquireMean.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                    inquireSDH.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                }
             }
 
             //Polite
@@ -888,21 +873,11 @@ namespace StudentFeedback_SpaceModules
                 if (key.Item1 == politeKey.Item1 &&
                     key.Item2 == politeKey.Item2 &&
                     key.Item3 == politeKey.Item3)
-                    tempDict.Add(key, distributionsDictionary[key]);
-
-            }
-            for (int i = 1; i <= tempDict.Count; i++)
-            {
-                Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
-                    politeKey.Item1, politeKey.Item2, politeKey.Item3, i.ToString());
-
-                politeSDL.Points.AddXY(i, tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
-                politeMean.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-                politeSDH.Points.AddXY(i, tempDict[tempKey].standardDeviation);
-
-                //politeMean.Points.AddXY(i,tempDict[tempKey].mean);
-                //politeSDH.Points.AddXY(i,tempDict[tempKey].mean + tempDict[tempKey].standardDeviation);
-                //politeSDL.Points.AddXY(i,tempDict[tempKey].mean - tempDict[tempKey].standardDeviation);
+                {
+                    politeSDL.Points.AddXY(key.Item4, distributionsDictionary[key].mean - distributionsDictionary[key].standardDeviation);
+                    politeMean.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                    politeSDH.Points.AddXY(key.Item4, distributionsDictionary[key].standardDeviation);
+                }
             }
 
             //Adding player scores charts
@@ -920,27 +895,19 @@ namespace StudentFeedback_SpaceModules
             findindbPlayer.Points.Clear();
             inquirePlayer.Points.Clear();
             politePlayer.Points.Clear();
-
-            Dictionary<Tuple<String, String, String, String>, Record> tempRecs = new Dictionary<Tuple<String, String, String, String>, Record>();
+            
             foreach (Tuple<String, String, String, String> key in records.Keys)
             {
                 if (key.Item1 == recordToUse.Item1 &&
                     key.Item2 == recordToUse.Item2 &&
-                    key.Item3 == recordToUse.Item3)
+                    key.Item4 == recordToUse.Item4)
                 {
-                    tempRecs.Add(key,records[key]);
+                    closingPlayer.Points.AddXY(key.Item3, records[key].Score1);
+                    empathyPlayer.Points.AddXY(key.Item3, records[key].Score2);
+                    findindbPlayer.Points.AddXY(key.Item3, records[key].Score3);
+                    inquirePlayer.Points.AddXY(key.Item3, records[key].Score4);
+                    politePlayer.Points.AddXY(key.Item3, records[key].Score5);
                 }
-            }
-            for (int i = 1; i <= tempRecs.Count; i++)
-            {
-                Tuple<String, String, String, String> tempKey = new Tuple<String, String, String, String>(
-                    recordToUse.Item1, recordToUse.Item2, recordToUse.Item3, i.ToString());
-
-                closingPlayer.Points.AddXY(i,tempRecs[tempKey].Score1);
-                empathyPlayer.Points.AddXY(i,tempRecs[tempKey].Score2);
-                findindbPlayer.Points.AddXY(i,tempRecs[tempKey].Score3);
-                inquirePlayer.Points.AddXY(i,tempRecs[tempKey].Score4);
-                politePlayer.Points.AddXY(i,tempRecs[tempKey].Score5);
             }
         }
 
@@ -953,9 +920,9 @@ namespace StudentFeedback_SpaceModules
             
             foreach (Tuple<String, String, String, String> item in records.Keys)
             {
-                if (comboBoxROC.SelectedItem.ToString() == item.Item2)
-                    if (!comboBoxGroep.Items.Contains(item.Item3))
-                        comboBoxGroep.Items.Add(item.Item3);
+                if (comboBoxROC.SelectedItem.ToString() == item.Item1)
+                    if (!comboBoxGroep.Items.Contains(item.Item2))
+                        comboBoxGroep.Items.Add(item.Item2);
             }
 
             if (comboBoxGroep.Items.Count > 0)
@@ -964,9 +931,9 @@ namespace StudentFeedback_SpaceModules
 
                 foreach (Tuple<String, String, String, String> item in records.Keys)
                 {
-                    if (comboBoxROC.SelectedItem.ToString() == item.Item2 && comboBoxGroep.SelectedItem.ToString() == item.Item3)
-                        if (!comboBoxLes.Items.Contains(item.Item4))
-                            comboBoxLes.Items.Add(item.Item4);
+                    if (comboBoxROC.SelectedItem.ToString() == item.Item1 && comboBoxGroep.SelectedItem.ToString() == item.Item2)
+                        if (!comboBoxLes.Items.Contains(item.Item3))
+                            comboBoxLes.Items.Add(item.Item3);
                 }
 
                 if (comboBoxLes.Items.Count > 0)
@@ -975,9 +942,9 @@ namespace StudentFeedback_SpaceModules
 
                     foreach (Tuple<String, String, String, String> item in records.Keys)
                     {
-                        if (comboBoxROC.SelectedItem.ToString() == item.Item2 && comboBoxGroep.SelectedItem.ToString() == item.Item3 && comboBoxLes.SelectedItem.ToString() == item.Item4)
-                            if (!comboBoxStudent.Items.Contains(item.Item1))
-                                comboBoxStudent.Items.Add(item.Item1);
+                        if (comboBoxROC.SelectedItem.ToString() == item.Item1 && comboBoxGroep.SelectedItem.ToString() == item.Item2 && comboBoxLes.SelectedItem.ToString() == item.Item3)
+                            if (!comboBoxStudent.Items.Contains(item.Item4))
+                                comboBoxStudent.Items.Add(item.Item4);
                     }
 
                     if (comboBoxStudent.Items.Count > 0)
@@ -994,9 +961,9 @@ namespace StudentFeedback_SpaceModules
             
             foreach (Tuple<String, String, String, String> item in records.Keys)
             {
-                if (comboBoxROC.SelectedItem.ToString() == item.Item2 && comboBoxGroep.SelectedItem.ToString() == item.Item3)
-                    if (!comboBoxLes.Items.Contains(item.Item4))
-                        comboBoxLes.Items.Add(item.Item4);
+                if (comboBoxROC.SelectedItem.ToString() == item.Item1 && comboBoxGroep.SelectedItem.ToString() == item.Item2)
+                    if (!comboBoxLes.Items.Contains(item.Item3))
+                        comboBoxLes.Items.Add(item.Item3);
             }
 
             if (comboBoxLes.Items.Count > 0)
@@ -1005,9 +972,9 @@ namespace StudentFeedback_SpaceModules
 
                 foreach (Tuple<String, String, String, String> item in records.Keys)
                 {
-                    if (comboBoxROC.SelectedItem.ToString() == item.Item2 && comboBoxGroep.SelectedItem.ToString() == item.Item3 && comboBoxLes.SelectedItem.ToString() == item.Item4)
-                        if (!comboBoxStudent.Items.Contains(item.Item1))
-                            comboBoxStudent.Items.Add(item.Item1);
+                    if (comboBoxROC.SelectedItem.ToString() == item.Item1 && comboBoxGroep.SelectedItem.ToString() == item.Item2 && comboBoxLes.SelectedItem.ToString() == item.Item3)
+                        if (!comboBoxStudent.Items.Contains(item.Item4))
+                            comboBoxStudent.Items.Add(item.Item4);
                 }
 
                 if (comboBoxStudent.Items.Count > 0)
@@ -1030,10 +997,10 @@ namespace StudentFeedback_SpaceModules
             {
                 //Select student to use
                 Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
-                        comboBoxStudent.SelectedItem.ToString(),
                         comboBoxROC.SelectedItem.ToString(),
                         comboBoxGroep.SelectedItem.ToString(),
-                        comboBoxLes.SelectedItem.ToString());
+                        comboBoxLes.SelectedItem.ToString(),
+                        comboBoxStudent.SelectedItem.ToString());
 
                 UpdateFeedback(studentKey);
             }
@@ -1043,10 +1010,10 @@ namespace StudentFeedback_SpaceModules
         {
             //Select student to use
             Tuple<String, String, String, String> studentKey = new Tuple<String, String, String, String>(
-                    comboBoxStudent.SelectedItem.ToString(),
                     comboBoxROC.SelectedItem.ToString(),
                     comboBoxGroep.SelectedItem.ToString(),
-                    comboBoxLes.SelectedItem.ToString());
+                    comboBoxLes.SelectedItem.ToString(),
+                    comboBoxStudent.SelectedItem.ToString());
 
             UpdateFeedback(studentKey);
         }
@@ -1214,7 +1181,7 @@ namespace StudentFeedback_SpaceModules
                     GenerateOutputToGraphic(studentKey);
                 }
 
-                //Reset visualizations to original student
+                //Reset visualizations to originally selected student
                 Tuple<String, String, String, String> studentKey2 = new Tuple<String, String, String, String>(
                         comboBoxStudent.SelectedItem.ToString(),
                         comboBoxROC.SelectedItem.ToString(),
