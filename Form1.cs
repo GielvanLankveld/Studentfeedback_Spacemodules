@@ -104,6 +104,27 @@ namespace StudentFeedback_SpaceModules
             chart4.Series.FindByName("Leerling score").BorderColor = leerlingBorderColor;
             chart5.Series.FindByName("Leerling score").BorderColor = leerlingBorderColor;
 
+            chart1.Series.FindByName("Leerling score").MarkerStyle = MarkerStyle.Circle;
+            chart2.Series.FindByName("Leerling score").MarkerStyle = MarkerStyle.Circle;
+            chart3.Series.FindByName("Leerling score").MarkerStyle = MarkerStyle.Circle;
+            chart4.Series.FindByName("Leerling score").MarkerStyle = MarkerStyle.Circle;
+            chart5.Series.FindByName("Leerling score").MarkerStyle = MarkerStyle.Circle;
+
+            chart1.Series.FindByName("Leerling score").MarkerColor = leerlingColor;
+            chart2.Series.FindByName("Leerling score").MarkerColor = leerlingColor;
+            chart3.Series.FindByName("Leerling score").MarkerColor = leerlingColor;
+            chart4.Series.FindByName("Leerling score").MarkerColor = leerlingColor;
+            chart5.Series.FindByName("Leerling score").MarkerColor = leerlingColor;
+
+            int size = 3;
+            chart1.Series.FindByName("Leerling score").MarkerSize = size;
+            chart2.Series.FindByName("Leerling score").MarkerSize = size;
+            chart3.Series.FindByName("Leerling score").MarkerSize = size;
+            chart4.Series.FindByName("Leerling score").MarkerSize = size;
+            chart5.Series.FindByName("Leerling score").MarkerSize = size;
+
+            
+
         }
 
         private String openCSVFileDialog()
