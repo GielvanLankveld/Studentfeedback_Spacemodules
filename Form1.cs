@@ -1263,10 +1263,11 @@ namespace StudentFeedback_SpaceModules
             {
                 //Set up mail
                 Subject = "Space Modules feedback les " + targetLesson,
-                Body = "Beste student,\n\nIn deze email vind je jouw persoonlijke feedback voor les " + targetLesson +
-                    ". Bekijk het plaatje in de attachments goed om te zien hoe jij het gedaan hebt ten opzichte van de groep en " +
-                    "lees het advies om te zien wat je kunt verbeteren en welke tips je daarvoor krijgt.\n\n"+
-                    "Vriendelijke groeten,\nSPL onderzoek",
+                Body = "Beste student,\n\nDe Bijlage bij deze email bevat jouw persoonlijke feedback voor sessie " + targetLesson +
+                " met de game Space Modules(sessie 1 = les 1).\nDe Bijlage bevat een plaatje dat toont hoe jij het gedaan hebt "+
+                "ten opzichte van de rest van de klas.\nDaarnaast bevat deze Bijlage een advies voor je prestaties in communiceren.\n"+
+                "Bekijk het plaatje en lees het advies en de tips over wat je eventueel kunt verbeteren.\n\nMet vriendelijke groet,\n"+
+                "Namens het team Games voor leren communiceren - Stichting Praktijkleren"
             })
             {
                 // Create the file attachment for this e-mail message.
